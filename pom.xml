@@ -139,9 +139,9 @@
     </dependencies>
 
     <scm>
-        <connection>scm:git:https://github.com/wso2-extensions/identity-outbound-auth-sms-otp.git</connection>
-        <url>https://github.com/wso2-extensions/identity-outbound-auth-sms-otp.git</url>
-        <developerConnection>scm:git:https://github.com/wso2-extensions/identity-outbound-auth-sms-otp.git</developerConnection>
+        <connection>scm:git:https://github.com/wso2-extensions/identity-outbound-auth-amazon.git</connection>
+        <url>https://github.com/wso2-extensions/identity-outbound-auth-amazon.git</url>
+        <developerConnection>scm:git:https://github.com/wso2-extensions/identity-outbound-auth-amazon.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
