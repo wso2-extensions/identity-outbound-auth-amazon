@@ -31,6 +31,7 @@ import org.apache.oltu.oauth2.client.response.OAuthClientResponse;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
+import org.apache.oltu.oauth2.common.utils.JSONUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.wso2.carbon.identity.application.authentication.framework.FederatedApplicationAuthenticator;
@@ -42,13 +43,12 @@ import org.wso2.carbon.identity.application.authenticator.oidc.OpenIDConnectAuth
 import org.wso2.carbon.identity.application.common.model.ClaimMapping;
 import org.wso2.carbon.identity.application.common.model.Property;
 import org.wso2.carbon.identity.application.common.util.IdentityApplicationConstants;
+import org.wso2.carbon.identity.core.util.IdentityUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Authenticator of Amazon
@@ -171,17 +171,21 @@ public class AmazonAuthenticator extends OpenIDConnectAuthenticator implements F
                 throw new AuthenticationFailedException("Access token is empty or null");
             }
             context.setProperty(OIDCAuthenticatorConstants.ACCESS_TOKEN, accessToken);
-            Map<ClaimMapping, String> claims;
-            AuthenticatedUser authenticatedUserObj;
-            String json = sendRequest(AmazonAuthenticatorConstants.AMAZON_USERINFO_ENDPOINT,
-                    oAuthResponse.getParam(OIDCAuthenticatorConstants.ACCESS_TOKEN));
-            JSONObject obj = new JSONObject(json);
-            authenticatedUserObj = AuthenticatedUser.createFederateAuthenticatedUserFromSubjectIdentifier((String) obj.get(AmazonAuthenticatorConstants.USER_ID));
-            authenticatedUserObj.setAuthenticatedSubjectIdentifier((String) obj.get(AmazonAuthenticatorConstants.USER_ID));
-            claims = getSubjectAttributes(oAuthResponse, authenticatorProperties);
-            authenticatedUserObj.setUserAttributes(claims);
-            context.setSubject(authenticatedUserObj);
-        } catch (OAuthProblemException | IOException | JSONException e) {
+            Map<ClaimMapping, String> claims = getSubjectAttributes(oAuthResponse, authenticatorProperties);
+            if (claims != null && !claims.isEmpty()) {
+                AuthenticatedUser authenticatedUserObj;
+                String userIDURI = AmazonAuthenticatorConstants.CLAIM_DIALECT_URI + "/"
+                        + AmazonAuthenticatorConstants.USER_ID;
+                authenticatedUserObj = AuthenticatedUser.createFederateAuthenticatedUserFromSubjectIdentifier
+                        (claims.get(ClaimMapping.build(userIDURI, userIDURI, (String)null, false)));
+                authenticatedUserObj.setAuthenticatedSubjectIdentifier(claims.get(ClaimMapping.build(userIDURI
+                        , userIDURI, (String)null, false)));
+                authenticatedUserObj.setUserAttributes(claims);
+                context.setSubject(authenticatedUserObj);
+            } else {
+                throw new AuthenticationFailedException("Selected user profile not found");
+            }
+        } catch (OAuthProblemException | JSONException e) {
             throw new AuthenticationFailedException("Authentication process failed", e);
         }
     }
@@ -222,5 +226,47 @@ public class AmazonAuthenticator extends OpenIDConnectAuthenticator implements F
             throw new AuthenticationFailedException(e.getMessage(), e);
         }
         return accessRequest;
+    }
+
+    /**
+     * Get the Amazon specific claim dialect URI.
+     * @return Claim dialect URI.
+     */
+    @Override
+    public String getClaimDialectURI() {
+        return AmazonAuthenticatorConstants.CLAIM_DIALECT_URI;
+    }
+
+    @Override
+    protected Map<ClaimMapping, String> getSubjectAttributes(OAuthClientResponse token, Map<String, String> authenticatorProperties) {
+        HashMap claims = new HashMap();
+        try {
+            String accessToken = token.getParam("access_token");
+            String url = this.getUserInfoEndpoint(token, authenticatorProperties);
+            String json = this.sendRequest(url, accessToken);
+            if(StringUtils.isBlank(json)) {
+                if(log.isDebugEnabled()) {
+                    log.debug("Unable to fetch user claims. Proceeding without user claims");
+                }
+                return claims;
+            }
+
+            Map jsonObject = JSONUtils.parseJSON(json);
+            Iterator i$ = jsonObject.entrySet().iterator();
+
+            while(i$.hasNext()) {
+                Map.Entry data = (Map.Entry)i$.next();
+                String key = (String)data.getKey();
+                claims.put(ClaimMapping.build(AmazonAuthenticatorConstants.CLAIM_DIALECT_URI + "/" + key,
+                                AmazonAuthenticatorConstants.CLAIM_DIALECT_URI + "/" + key, (String)null, false),
+                        jsonObject.get(key).toString());
+                if(log.isDebugEnabled() && IdentityUtil.isTokenLoggable("UserClaims")) {
+                    log.debug("Adding claims from end-point data mapping : " + key + " - " + jsonObject.get(key).toString());
+                }
+            }
+        } catch (Exception e) {
+            log.error("Error occurred while accessing user info endpoint", e);
+        }
+        return claims;
     }
 }

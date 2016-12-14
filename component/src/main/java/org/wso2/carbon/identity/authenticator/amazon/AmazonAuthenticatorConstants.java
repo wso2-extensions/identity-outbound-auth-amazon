@@ -35,4 +35,5 @@ public class AmazonAuthenticatorConstants {
     public static final String CALLBACK_URL="Callback URL";
     public static final String USER_ID="user_id";
     public static final String AMAZON_SCOPE_PROFILE = "profile";
+    public static final String CLAIM_DIALECT_URI = "http://wso2.org/amazon/claims";
 }
