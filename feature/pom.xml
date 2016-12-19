@@ -29,7 +29,7 @@
     <description>This feature contains extension feature for Amazon</description>
     <dependencies>
         <dependency>
-            <groupId>org.wso2.carbon.extension.identity.authenticator</groupId>
+            <groupId>org.wso2.carbon.extension.identity.authenticator.outbound.amazon</groupId>
             <artifactId>org.wso2.carbon.extension.identity.authenticator.amazon.connector</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -58,7 +58,7 @@
                             </adviceFile>
                             <bundles>
                                 <bundleDef>
-                                    org.wso2.carbon.extension.identity.authenticator:org.wso2.carbon.extension.identity.authenticator.amazon.connector
+                                    org.wso2.carbon.extension.identity.authenticator.outbound.amazon:org.wso2.carbon.extension.identity.authenticator.amazon.connector
                                 </bundleDef>
                             </bundles>
                         </configuration>
