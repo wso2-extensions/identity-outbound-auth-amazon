@@ -32,7 +32,7 @@ import java.util.Hashtable;
  */
 public class AmazonAuthenticatorServiceComponent {
 
-    private static Log log = LogFactory.getLog(AmazonAuthenticatorServiceComponent.class);
+    private static final Log log = LogFactory.getLog(AmazonAuthenticatorServiceComponent.class);
 
     protected void activate(ComponentContext ctxt) {
         try {

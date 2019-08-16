@@ -57,7 +57,7 @@ import java.util.Iterator;
  */
 public class AmazonAuthenticator extends OpenIDConnectAuthenticator implements FederatedApplicationAuthenticator {
 
-    private static Log log = LogFactory.getLog(AmazonAuthenticator.class);
+    private static final Log log = LogFactory.getLog(AmazonAuthenticator.class);
 
     /**
      * Get Amazon authorization endpoint.
