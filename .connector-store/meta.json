@@ -2,11 +2,18 @@
     "name": "Amazon",
     "owner": "WSO2",
     "category": "Federated authenticator",
-    "documentationUrl": "https://github.com/wso2-extensions/identity-outbound-auth-amazon/blob/master/README.md",
+    "documentationUrl": "https://github.com/wso2-extensions/identity-outbound-auth-amazon/blob/master/docs/README.md",
     "description": "The Amazon authenticator allows you to authenticate users using Amazon through the WSO2 Identity Server.",
     "status": "Active",
     "labels": ["SocialLogin"],
     "releases": [
+        {
+            "tagName": "v1.0.2",
+            "products": [
+                "IS 7.1.0",
+                "IS 7.0.0"
+            ]
+        },
         {
             "tagName": "v1.0.1",
             "products": [
