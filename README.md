@@ -13,8 +13,3 @@ With WSO2 IS, there are lot of provisioning capabilities available. There are 3 
 - UBUNTU 14.04
 - WSO2 IS 5.1.0
 - Java 1.7
-
-**Set it up:**
-1. Navigate to amazon-authenticator/org.wso2.carbon.identity.authenticator.amazon and build.
-2. Place org.wso2.carbon.identity.authenticator jar into <IS_HOME>/repository/components/dropins.
-3. Start the IS server and create Identity provider and service provider in IS via the IS console.
