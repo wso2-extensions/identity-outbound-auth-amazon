@@ -25,7 +25,7 @@
     </parent>
     <groupId>org.wso2.carbon.extension.identity.authenticator.outbound.amazon</groupId>
     <artifactId>identity-outbound-auth-amazon</artifactId>
-    <version>1.0.6-SNAPSHOT</version>
+    <version>1.0.7-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>WSO2 Carbon Extension - Amazon Pom</name>
     <url>http://wso2.org</url>
@@ -255,6 +255,7 @@
     </build>
     <properties>
         <carbon.identity.version>5.0.7</carbon.identity.version>
+        <carbon.identity.framework.package.import.version.range>[5.0.7, 8.0.0)</carbon.identity.framework.package.import.version.range>
         <commons-logging.version>4.4.3</commons-logging.version>
         <carbon.kernel.version>4.4.3</carbon.kernel.version>
         <oltu.version>1.0.0.wso2v2</oltu.version>
